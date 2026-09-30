@@ -189,7 +189,7 @@ def main() -> int:
                 result_dir = run_dir / "runs" / f"{row['name']}_DRY_RUN"
                 parameter_file = result_dir / Path(row["parameter_file"]).name if row["parameter_file"] else None
                 command = expand_command(row["command"], result_dir, parameter_file, row["name"], row["repetition"])
-                request = ["srun", "--exclusive", "--exact", "--nodes=1", "--ntasks=1", f"--cpus-per-task={row['cpus']}", f"--mem={row['memory']}", f"--time={row['time']}", "--cpu-bind=verbose,cores", "--export=ALL"]
+                request = ["srun", "--exclusive", "--exact", "--mpi=none", "--nodes=1", "--ntasks=1", f"--cpus-per-task={row['cpus']}", f"--mem={row['memory']}", f"--time={row['time']}", "--cpu-bind=verbose,cores", "--export=ALL"]
                 if row["measure"] == "true":
                     measurement_dir = result_dir / "measurement"
                     request.extend(["/usr/bin/time", "-v", "-o", str(measurement_dir / "time-v.txt"), "perf", "stat", "-o", str(measurement_dir / "perf-stat.txt"), "-e", "cycles,instructions,task-clock,cpu-clock", "--"])
@@ -260,7 +260,7 @@ def main() -> int:
                             row = {**row, "parameter_file": str(parameter_file)}
                         command = expand_command(row["command"], result_dir, parameter_file, row["name"], row["repetition"])
                         request = [
-                            "srun", "--exclusive", "--exact", "--nodes=1", "--ntasks=1",
+                            "srun", "--exclusive", "--exact", "--mpi=none", "--nodes=1", "--ntasks=1",
                             f"--cpus-per-task={row['cpus']}", f"--mem={row['memory']}",
                             f"--time={row['time']}", "--cpu-bind=verbose,cores", "--export=ALL",
                         ]

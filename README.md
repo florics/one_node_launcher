@@ -109,6 +109,12 @@ time. If you later need a priority policy or thousands of experiments, add a
 small dispatcher to `launch.py`, while still letting SLURM bind and enforce
 the steps.
 
+All launcher steps use `srun --mpi=none`. This leaves MPI process management
+to commands that explicitly invoke an MPI launcher, such as PIPS-IPM++. The
+PIPS runner uses the cluster's Open MPI launcher with `--bind-to none` and
+`-np <ranks>` inside the step's CPU set, and logs each rank's inherited CPU
+affinity through `OMPI_COMM_WORLD_RANK` and `OMPI_COMM_WORLD_SIZE`.
+
 The SLURM options follow the one-exclusive-node, multiple-background-`srun`
 pattern discussed from SCIP's
 [`run_group.sh`](https://github.com/scipopt/scip/blob/master/check/cluster/run_group.sh)
